@@ -17,6 +17,11 @@ contract Uniswapv3pool {
         uint160 sqrtPriceX96;
         int24 tick;
     }
+    struct CallBackData{
+        address token0;
+        address token1;
+        address payer;
+    }
 
     Slot0 public slot0;
 
@@ -76,8 +81,11 @@ contract Uniswapv3pool {
         amount0 = 0.998976618347425280 ether;
         amount1 = 5000 ether;
 
-        uint256 balanceBefore0 = balance0();
-        uint256 balanceBefore1 = balance1();
+        uint256 balanceBefore0;
+        uint256 balanceBefore1;
+
+        if(amount0 > 0) balanceBefore0 = balance0();
+        if(amount1 > 0) balanceBefore1 = balance1();
 
         IUniswapV3MintCallback(msg.sender).uniswapV3MintCallback(
             amount0,
@@ -85,9 +93,9 @@ contract Uniswapv3pool {
             data
         );
 
-        if (balanceBefore0 + amount0 > balance0())
+        if (amount0 > 0 && balanceBefore0 + amount0 > balance0())
             revert InsufficentInputAmount();
-        if (balanceBefore1 + amount1 > balance1())
+        if (amount1 > 0 && balanceBefore1 + amount1 > balance1())
             revert InsufficentInputAmount();
 
         emit Mint(
