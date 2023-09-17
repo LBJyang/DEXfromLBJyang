@@ -58,7 +58,7 @@ contract UniswapV3PoolTest is Test {
             );
         assertEq(token0.balanceOf(address(pool)), expectedAmount0);
         assertEq(token1.balanceOf(address(pool)), expectedAmount1);
-        bytes32 positionKey = keccak256(abi.encode(address(this),params.lowTick,params.upperTick));
+        bytes32 positionKey = keccak256(abi.encodePacked(address(this),params.lowTick,params.upperTick));
         uint128 posLiquidity = pool.positions(positionKey);
         assertEq(posLiquidity, params.liquidity, "Error Liquidity!");
     }
