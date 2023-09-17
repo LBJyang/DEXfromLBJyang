@@ -28,7 +28,6 @@ contract UniswapV3PoolTest is Test {
     function setUp() public {
         token0 = new ERC20Mintable("Ether","ETH",18);
         token1 = new ERC20Mintable("USDC","USDC",18);
-
     }
 
     function testMintSuccess() public {
@@ -45,19 +44,23 @@ contract UniswapV3PoolTest is Test {
             mintLiquidity:true
         });
         (uint256 poolBalance0, uint256 poolBalance1) = setUpTestCases(params);(params);
-
-uint256 expectedAmount0 = 0.998976618347425280 ether;
-uint256 expectedAmount1 = 5000 ether;
-assertEq(
-    poolBalance0,
-    expectedAmount0,
-    "incorrect token0 deposited amount"
-);
-assertEq(
-    poolBalance1,
-    expectedAmount1,
-    "incorrect token1 deposited amount"
-);
+        uint256 expectedAmount0 = 0.998976618347425280 ether;
+        uint256 expectedAmount1 = 5000 ether;
+        assertEq(
+            poolBalance0,
+            expectedAmount0,
+            "incorrect token0 deposited amount"
+            );
+        assertEq(
+            poolBalance1,
+            expectedAmount1,
+            "incorrect token1 deposited amount"
+            );
+        assertEq(token0.balanceOf(address(pool)), expectedAmount0);
+        assertEq(token1.balanceOf(address(pool)), expectedAmount1);
+        bytes32 positionKey = keccak256(abi.encode(address(this),params.lowTick,params.upperTick));
+        uint128 posLiquidity = pool.positions(positionKey);
+        assertEq(posLiquidity, params.liquidity, "Error Liquidity!");
     }
 
     function setUpTestCases(TestCaseParams memory params) internal returns(uint256 poolBalance0,uint256 poolBalance1){
