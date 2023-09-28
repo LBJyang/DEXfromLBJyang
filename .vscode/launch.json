@@ -1,27 +1,17 @@
 {
-    // 使用 IntelliSense 了解相关属性。 
-    // 悬停以查看现有属性的描述。
-    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "solidity",
-            "request": "launch",
-            "name": "Debug Solidity (via contract entry point)"
-        },
-
-        {
-            "type": "solidity",
-            "request": "launch",
-            "name": "Debug Solidity",
-            "__configurationTarget": 6
-        },
-        {
-            "type": "solidity",
-            "request": "launch",
-            "name": "Debug Solidity",
-            "__configurationTarget": 6,
-            "workspaceDirectory": "d:\\uniswapv3clone"
-        }
-    ]
+  // 使用 IntelliSense 了解相关属性。 
+  // 悬停以查看现有属性的描述。
+  // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    
+    {
+      "name": "web3 debug",
+      "type": "solidity",
+      "request": "launch",
+      //"program": "test\\ERC20Mintable.sol",
+      //"web3": "http://localhost:8545", // Web3 Provider URL
+      //"network": "development" // Solidity Network
+    }
+  ]
 }

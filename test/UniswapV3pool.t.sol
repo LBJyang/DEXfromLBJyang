@@ -11,8 +11,8 @@ contract UniswapV3PoolTest is Test, TestUtils {
     ERC20Mintable token0;
     ERC20Mintable token1;
     Uniswapv3pool pool;
-    bool transferInMintCallback;
-    bool transferInSwapCallback;
+    bool transferInMintCallback = true;
+    bool transferInSwapCallback = true;
 
     struct TestCaseParams {
         uint256 wethBalance;
@@ -46,7 +46,6 @@ contract UniswapV3PoolTest is Test, TestUtils {
             mintLiquidity: true
         });
         (uint256 poolBalance0, uint256 poolBalance1) = setUpTestCases(params);
-        (params);
         uint256 expectedAmount0 = 0.998976618347425280 ether;
         uint256 expectedAmount1 = 5000 ether;
         assertEq(
@@ -118,7 +117,7 @@ contract UniswapV3PoolTest is Test, TestUtils {
             transferInSwapCallback: true,
             mintLiquidity: true
         });
-        (uint256 poolBalance0, uint256 poolBalance1) = setUpTestCases(params);
+        setUpTestCases(params);
         token1.mint(address(this), 42 ether);
         token1.approve(address(this), 42 ether);
 
@@ -135,11 +134,45 @@ contract UniswapV3PoolTest is Test, TestUtils {
             abi.encode(extra)
         );
 
-        //assertEq(amount0Delta, -0.008396714242162444 ether, "invalid ETH out!");
-        //assertEq(amount1Delta, 42 ether,"invalid usdc out!");
-        assertTrue(true);
-        //assertEq(token0.balanceOf(address(this)), token0BalanceBefore - uint256(amount0Delta), "invalid user ETH!");
-        //assertEq(token1.balanceOf(address(this)), 0, "invalide user USDC balance!");
+        assertEq(amount0Delta, -0.008396714242162444 ether, "invalid ETH out!");
+        assertEq(amount1Delta, 42 ether, "invalid usdc out!");
+        //assertTrue(true);
+        assertEq(
+            token0.balanceOf(address(this)),
+            uint256(int256(token0BalanceBefore) - amount0Delta),
+            "invalid user ETH!"
+        );
+        assertEq(
+            token1.balanceOf(address(this)),
+            0,
+            "invalide user USDC balance!"
+        );
+    }
+
+    function testSwapInsufficientSupply() public {
+        TestCaseParams memory params = TestCaseParams({
+            wethBalance: 1 ether,
+            usdcBalance: 5000 ether,
+            currentTick: 85176,
+            lowTick: 84222,
+            upperTick: 86129,
+            liquidity: 1517882343751509868544,
+            currentSqrtP: 5602277097478614198912276234240,
+            transferInMintCallback: true,
+            transferInSwapCallback: true,
+            mintLiquidity: true
+        });
+        setUpTestCases(params);
+        vm.expectRevert(encodeError("InsufficientSupply()"));
+        token1.mint(address(this), 32 ether);
+        token1.approve(address(this), 32 ether);
+        Uniswapv3pool.CallBackData memory extra = Uniswapv3pool.CallBackData({
+            token0: address(token0),
+            token1: address(token1),
+            payer: address(this)
+        });
+
+        pool.swap(address(this), abi.encode(extra));
     }
 
     /*function testMintInsufficientTokenBalance() public {
@@ -196,7 +229,6 @@ contract UniswapV3PoolTest is Test, TestUtils {
     ) internal returns (uint256 poolBalance0, uint256 poolBalance1) {
         token0.mint(address(this), params.wethBalance);
         token1.mint(address(this), params.usdcBalance);
-        transferInMintCallback = params.transferInMintCallback;
 
         pool = new Uniswapv3pool(
             address(token0),
@@ -222,6 +254,8 @@ contract UniswapV3PoolTest is Test, TestUtils {
                 abi.encode(extra)
             );
         }
+        transferInMintCallback = params.transferInMintCallback;
+        transferInSwapCallback = params.transferInSwapCallback;
     }
 
     function uniswapV3MintCallback(
