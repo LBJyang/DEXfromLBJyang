@@ -14,26 +14,28 @@ contract Uniswapv3Manager {
     ) public {
         Uniswapv3pool(poolAddress_).mint(
             msg.sender,
-            lowTick,upperTick,liquidity,data
+            lowTick,
+            upperTick,
+            liquidity,
+            data
         );
     }
 
-    function swap(address poolAddress_, bytes calldata data) public{
+    function swap(address poolAddress_, bytes calldata data) public {
         Uniswapv3pool(poolAddress_).swap(msg.sender, data);
     }
 
-    function uniswapV3MintCallback (
+    function uniswapV3MintCallback(
         uint256 amount0,
         uint256 amount1,
         bytes calldata data
     ) public {
-            Uniswapv3pool.CallBackData memory extra = abi.decode(
-                data,
-                (Uniswapv3pool.CallBackData)
-            );
-            IERC20(extra.token0).transferFrom(extra.payer, msg.sender, amount0);
-            IERC20(extra.token1).transferFrom(extra.payer, msg.sender, amount1);
-        }
+        Uniswapv3pool.CallBackData memory extra = abi.decode(
+            data,
+            (Uniswapv3pool.CallBackData)
+        );
+        IERC20(extra.token0).transferFrom(extra.payer, msg.sender, amount0);
+        IERC20(extra.token1).transferFrom(extra.payer, msg.sender, amount1);
     }
 
     function uniswapV3SwapCallback(
