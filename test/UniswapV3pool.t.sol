@@ -104,6 +104,13 @@ contract UniswapV3PoolTest is Test, TestUtils {
         pool.mint(address(this), 0, 1, 0, "");
     }
 
+    /*
+     * @notice Describe the main purpose of the function
+     * @dev Include additional implementation details here
+     * @param  Description of the purpose of parameter 1
+     * @param  Description of the purpose of parameter 2
+     * @return Description of the return value
+     */
     function testSwapSuccess() public {
         TestCaseParams memory params = TestCaseParams({
             wethBalance: 1 ether,
@@ -163,8 +170,7 @@ contract UniswapV3PoolTest is Test, TestUtils {
             mintLiquidity: true
         });
         setUpTestCases(params);
-        vm.expectRevert(encodeError("InsufficientSupply()"));
-        token1.mint(address(this), 32 ether);
+        vm.expectRevert(encodeError("InsufficentInputAmount()"));
         token1.approve(address(this), 32 ether);
         Uniswapv3pool.CallBackData memory extra = Uniswapv3pool.CallBackData({
             token0: address(token0),
@@ -175,68 +181,26 @@ contract UniswapV3PoolTest is Test, TestUtils {
         pool.swap(address(this), abi.encode(extra));
     }
 
-    /*function testMintInsufficientTokenBalance() public {
-        TestCaseParams memory params = TestCaseParams({
-            wethBalance: 0,
-            usdcBalance: 0,
-            currentTick: 85176,
-            lowTick: 84222,
-            upperTick: 86129,
-            liquidity: 1517882343751509868544,
-            currentSqrtP: 5602277097478614198912276234240,
-            transferInMintCallback: false,
-            transferInSwapCallback: true,
-            mintLiquidity:false
-        });
-        setUpTestCases(params);
-
-        vm.expectRevert(encodeError("InsufficientInputAmount()"));
-        pool.mint(
-            address(this),
-            params.lowTick,
-            params.upperTick,
-            params.liquidity,
-            ""
-        );
-    }*/
-
-    /*function testMintInfficientTokenBalance() public {
-        TestCaseParams memory params = TestCaseParams({
-            wethBalance: 0,
-            usdcBalance: 0,
-            currentTick: 85176,
-            lowTick: 84222,
-            upperTick: 86129,
-            liquidity: 1517882343751509868544,
-            currentSqrtP: 5602277097478614198912276234240,
-            transferInMintCallback: false,
-            transferInSwapCallback: true,
-            mintLiquidity: false
-        });
-        setUpTestCases(params);
-        vm.expectRevert(encodeError("InsufficientInputAmount!"));
-        pool.mint(
-            address(this),
-            params.lowTick,
-            params.upperTick,
-            params.liquidity,
-            ""
-        );
-    }*/
-
+    /*
+     * @notice 按照设定参数运行mint函数。
+     * @dev Include additional implementation details here
+     * @param  Description of the purpose of parameter 1
+     * @param  Description of the purpose of parameter 2
+     * @return 返回mint函数的返回值。
+     */
     function setUpTestCases(
         TestCaseParams memory params
     ) internal returns (uint256 poolBalance0, uint256 poolBalance1) {
         token0.mint(address(this), params.wethBalance);
         token1.mint(address(this), params.usdcBalance);
-
+        //生成pool合约
         pool = new Uniswapv3pool(
             address(token0),
             address(token1),
             params.currentSqrtP,
             params.currentTick
         );
-
+        //通过flag确定hi否运行mint函数。
         if (params.mintLiquidity) {
             token0.approve(address(this), params.wethBalance);
             token1.approve(address(this), params.usdcBalance);
@@ -246,6 +210,7 @@ contract UniswapV3PoolTest is Test, TestUtils {
                     token1: address(token1),
                     payer: address(this)
                 });
+            //运行mint函数
             (poolBalance0, poolBalance1) = pool.mint(
                 address(this),
                 params.lowTick,
