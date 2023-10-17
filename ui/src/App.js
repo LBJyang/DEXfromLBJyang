@@ -1,6 +1,7 @@
 import "./App.css";
 import { MetaMaskProvider } from "./contexts/MetaMask";
 import MetaMask from "./components/MetaMask.js";
+import SwapForm from "./components/SwapForm";
 
 const config = {
   token0Address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
@@ -19,7 +20,7 @@ const App = () => {
     <MetaMaskProvider>
       <div className="App flex flex-col justify-between items-center w-full h-full">
         <MetaMask />
-        <footer></footer>
+        <SwapForm config={config} /> <footer></footer>
       </div>
     </MetaMaskProvider>
   );

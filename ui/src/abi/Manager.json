@@ -8,7 +8,7 @@
       },
       {
         "internalType": "int24",
-        "name": "lowerTick",
+        "name": "lowTick",
         "type": "int24"
       },
       {

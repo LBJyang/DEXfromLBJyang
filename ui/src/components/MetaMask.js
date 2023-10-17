@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { MetaMaskContext } from "./components/MetaMask";
+import { MetaMaskContext } from "../contexts/MetaMask";
 import "./MetaMask.css";
 
 const chainIdtoChainName = (chain) => {

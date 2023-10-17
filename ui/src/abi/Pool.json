@@ -13,12 +13,12 @@
       },
       {
         "internalType": "uint160",
-        "name": "sqrtPriceX96",
+        "name": "sqrtPriceX96_",
         "type": "uint160"
       },
       {
         "internalType": "int24",
-        "name": "tick",
+        "name": "tick_",
         "type": "int24"
       }
     ],
@@ -27,7 +27,7 @@
   },
   {
     "inputs": [],
-    "name": "InsufficientInputAmount",
+    "name": "InsufficentInputAmount",
     "type": "error"
   },
   {
@@ -58,13 +58,13 @@
       {
         "indexed": true,
         "internalType": "int24",
-        "name": "tickLower",
+        "name": "lowTick",
         "type": "int24"
       },
       {
         "indexed": true,
         "internalType": "int24",
-        "name": "tickUpper",
+        "name": "upperTick",
         "type": "int24"
       },
       {
@@ -160,7 +160,7 @@
       },
       {
         "internalType": "int24",
-        "name": "lowerTick",
+        "name": "lowTick",
         "type": "int24"
       },
       {
